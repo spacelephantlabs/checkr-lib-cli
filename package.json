@@ -1,0 +1,55 @@
+{
+  "name": "checkr-lib-cli",
+  "version": "0.0.3",
+  "description": "javascript CLI for checkr-lib",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "start": "node ./dist/index.js",
+    "build": "./node_modules/.bin/tsc",
+    "pretty": "prettier --config ./prettier.config.js \"{src,test}/**/*.ts\"",
+    "prettify": "yarn pretty --write",
+    "lint": "tslint -c ./tslint.json -t codeFrame \"{src,test}/**/*.ts\"",
+    "clean": "rm -rf ./dist",
+    "cleanAll": "rm -rf ./dist ./node_modules",
+    "check-no-modifications": "test -z \"$(git status --porcelain)\" || (echo \"/!\\ Git workspace tampered after build!! $(git status --porcelain)\" && exit 1)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spacelephantlabs/checkr-lib-cli.git"
+  },
+  "author": "Fabien TREGUER <fabien.treguer@spacelephant.org> http://spacelephant.org#fabien",
+  "license": "Apache-2.0",
+  "engines": {
+    "node": ">=8"
+  },
+  "bugs": {
+    "url": "https://github.com/spacelephantlabs/checkr-lib-cli/issues"
+  },
+  "homepage": "https://github.com/spacelephantlabs/checkr-lib-cli#readme",
+  "dependencies": {
+    "chalk": "^2.3.0",
+    "checkr-lib": "^0.0.7",
+    "clear": "0.0.1",
+    "figlet": "^1.2.0",
+    "inquirer": "^6.2.1",
+    "prettier": "1.12.1"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/figlet": "^1.2.0",
+    "@types/inquirer": "^0.0.43",
+    "tslint": "^5.9.1",
+    "tslint-config-prettier": "^1.12.0",
+    "tslint-config-standard": "^7.0.0",
+    "typescript": "^2.8.1"
+  },
+  "bin": {
+    "checkr": "./dist/start.js"
+  }
+}

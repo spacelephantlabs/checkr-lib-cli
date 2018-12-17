@@ -1,0 +1,102 @@
+# Javascript Node CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-javascript/ for more details
+#
+version: 2
+
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:10
+
+node_modules_cache_key: &node_modules_cache_key
+  v2-dependencies-{{ checksum "yarn.lock" }}
+
+restore_cache: &restore_cache
+  restore_cache:
+    key: *node_modules_cache_key
+
+save_cache: &save_cache
+  save_cache:
+    paths:
+      - node_modules
+    key: *node_modules_cache_key
+
+persist_to_workspace: &persist_to_workspace
+  persist_to_workspace:
+    root: ~/repo
+    paths: .
+
+attach_workspace: &attach_workspace
+  attach_workspace:
+    at: ~/repo
+
+jobs:
+  build:
+    <<: *defaults  
+    steps:
+      - checkout
+      - *restore_cache
+      - run: yarn
+      - *save_cache
+      - run:
+          name: Run build 
+          command: yarn build
+      - *persist_to_workspace
+  # test:
+  #   <<: *defaults  
+  #   steps:
+  #     - *attach_workspace
+  #     - run:
+  #         name: Run tests
+  #         command: yarn test
+  # deploy:
+  #   <<: *defaults
+  #   steps:
+  #     - *attach_workspace
+  #     - run:
+  #         name: Authenticate with registry
+  #         command: echo "//registry.npmjs.org/:_authToken=$npm_TOKEN" > ~/repo/.npmrc
+  #     - run:
+  #         name: Publish package
+  #         command: yarn publish
+
+workflows:
+  version: 2
+  build-test-deploy:
+    jobs:
+      - build
+      # - test:
+      #     requires:
+      #       - build
+      # - deploy:
+      #     requires:
+      #       - test
+      #     filters:
+      #       branches:
+      #         only: master
+  scheduled-workflow:
+    jobs:
+      - build
+      # - test:
+      #     requires:
+      #       - build
+    triggers:
+      - schedule:
+          cron: "27 3 * * 1"
+          filters:
+            branches:
+              only: 
+                - master
+
+
+####################################
+## Notifications
+####################################
+# It's a 1.0 CircleCI config, but it's still working
+# See https://discuss.circleci.com/t/experimental-branch-notifications-from-1-0/12964
+experimental:
+  notify:
+    branches:
+      only:
+        - master
